@@ -30,7 +30,11 @@ app.use(limiter);
 
 // CORS configuration
 app.use(cors({
-    origin: process.env.CLIENT_URL || 'http://localhost:3000',
+    origin: [
+        'http://localhost:3000', // Local development
+        'https://gems-frontend-two.vercel.app', // Vercel frontend
+        process.env.CLIENT_URL
+    ].filter(Boolean), // Remove undefined values
     credentials: true
 }));
 
