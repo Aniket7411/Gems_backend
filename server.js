@@ -60,6 +60,8 @@ app.use('/api/cart', cartRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/otp', otpRoutes);
 
+console.log("test");
+
 // Health check route
 app.get('/api/health', (req, res) => {
     res.json({
