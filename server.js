@@ -30,13 +30,34 @@ app.use(limiter);
 
 // CORS configuration
 app.use(cors({
-    origin: [
-        'http://localhost:3000', // Local development
-        'https://gems-frontend-two.vercel.app', // Vercel frontend
-        process.env.CLIENT_URL
-    ].filter(Boolean), // Remove undefined values
-    credentials: true
+    origin: function (origin, callback) {
+        // Allow requests with no origin (like mobile apps or curl requests)
+        if (!origin) return callback(null, true);
+
+        const allowedOrigins = [
+            'http://localhost:3000',
+            'http://localhost:3001',
+
+            'https://auralaneweb.vercel.app',
+            'https://auralaneweb.vercel.app/',
+            process.env.CLIENT_URL
+        ].filter(Boolean);
+
+        if (allowedOrigins.indexOf(origin) !== -1) {
+            callback(null, true);
+        } else {
+            console.log('CORS blocked origin:', origin);
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+    optionsSuccessStatus: 200
 }));
+
+// Handle preflight OPTIONS requests
+app.options('*', cors());
 
 // Body parser middleware
 app.use(express.json({ limit: '10mb' }));
